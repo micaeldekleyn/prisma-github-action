@@ -16,11 +16,21 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: npm install
-      uses: actions/npm@master
+    - name: Checkout on master
+      uses: actions/checkout@master
       with:
-        args: install
+        ref: master
+    - name: Setup node 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+    - run: npm install
+    - name: Prisma login
+      uses: micaeldekleyn/prisma-github-action@master
+      with:
+        args: login
+      env:
+        PRISMA_CLOUD_SESSION_KEY: ${{ secrets.PRISMA_CLOUD_SESSION_KEY }}
     - name: prisma deploy
       uses: micaeldekleyn/prisma-github-action@master
       with:
